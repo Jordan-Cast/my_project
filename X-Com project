@@ -1,0 +1,113 @@
+-- The base
+CREATE TABLE Base(
+    base_id NUMBER PRIMARY KEY,
+    name_base VARCHAR2(55),
+    area_of_base NUMBER,
+    hangar_id NUMBER,
+    living_id NUMBER,
+    research_id NUMBER,
+    engineer_id NUMBER,
+    storage_id NUMBER,
+    FOREIGN KEY(hangar_id) REFERENCES Hangar(hangar_id),
+    FOREIGN KEY (living_id) REFERENCES Living_quarters(living_id),
+    FOREIGN KEY(research_id) REFERENCES Laboratory(research_id),
+    FOREIGN KEY(engineer_id) REFERENCES Workshop(engineering_id),
+    FOREIGN KEY(storage_id) REFERENCES General_store(storage_id) 
+);
+
+-- Aircraft for the hangar
+CREATE TABLE Aircraft(
+    air_id NUMBER PRIMARY KEY,
+    armament VARCHAR2(40),
+    max_speed NUMBER,
+    max_range NUMBER
+);
+
+-- The rooms for the base
+CREATE TABLE General_store(
+    storage_id NUMBER PRIMARY KEY,
+    max_cap NUMBER(2)
+);
+
+CREATE TABLE Living_quarters(
+    living_id NUMBER PRIMARY KEY,
+    max_cap NUMBER
+);
+
+CREATE TABLE Hangar(
+    hangar_id NUMBER PRIMARY KEY,
+    aircraft_id NUMBER,
+    FOREIGN KEY(aircraft_id) REFERENCES Aircraft(air_id)
+);
+
+CREATE TABLE Laboratory(
+    research_id NUMBER PRIMARY KEY,
+    available_room NUMBER(2),
+    progress DECIMAL
+);
+
+CREATE TABLE Workshop(
+    engineering_id NUMBER PRIMARY KEY,
+    available_room NUMBER(2),
+    progress DECIMAL
+);
+
+-- Countries from earth
+CREATE TABLE country(
+    country_id NUMBER PRIMARY KEY,
+    expense NUMBER,
+    panic NUMBER,
+    alien_activity NUMBER
+);
+
+-- To create operatives
+CREATE TABLE Operative(
+    op_id NUMBER PRIMARY KEY,
+    living_id NUMBER,
+    FOREIGN KEY(living_id) REFERENCES Living_quarters(living_id),
+    name_op VARCHAR2(60),
+    health_points NUMBER,
+    action_points NUMBER,
+    Stamina NUMBER,
+    accuracy NUMBER,
+    throw_accuracy NUMBER,
+    strength NUMBER,
+    bravery NUMBER
+);
+
+-- To combine the base with the country that was chosen
+CREATE TABLE home_base(
+    base_id NUMBER,
+    country_id NUMBER,
+    FOREIGN KEY(base_id) REFERENCES Base(base_id),
+    FOREIGN KEY(country_id) REFERENCES country(country_id),
+    PRIMARY KEY(base_id, country_id)
+);
+
+-- Enemy glorp
+CREATE TABLE UFO(
+    UFO_ID NUMBER PRIMARY KEY,
+    ufo_type VARCHAR2(40),
+    race VARCHAR2(20),
+    objective VARCHAR2(80),
+    armament VARCHAR2(30),
+    speed NUMBER
+);
+
+-- Gleeby deeby squatting on earth
+CREATE TABLE alien_base(
+    alien_id NUMBER PRIMARY KEY,
+    occupants NUMBER,
+    race VARCHAR2(20),
+    country_id NUMBER,
+    FOREIGN KEY(country_id) REFERENCES country(country_id)
+);
+
+-- The many insertions oh god
+INSERT INTO Aircraft(air_id, armament, max_speed, max_range)
+VALUES(001, 'Long_range missiles', 2450, 3500);
+
+INSERT INTO Hangar(hangar_id, aircraft_id)
+VALUES(011, 001);
+
+INSERT INTO Living_quarters(living_id, max_cap) VALUES(02001, 50);
