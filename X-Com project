@@ -15,6 +15,8 @@ CREATE TABLE Base(
     FOREIGN KEY(storage_id) REFERENCES General_store(storage_id) 
 );
 
+DROP TABLE Base;
+
 -- Aircraft for the hangar
 CREATE TABLE Aircraft(
     air_id NUMBER PRIMARY KEY,
@@ -43,18 +45,20 @@ CREATE TABLE Hangar(
 CREATE TABLE Laboratory(
     research_id NUMBER PRIMARY KEY,
     available_room NUMBER(2),
-    progress DECIMAL
+    progress DECIMAL(3, 2)
 );
 
 CREATE TABLE Workshop(
     engineering_id NUMBER PRIMARY KEY,
     available_room NUMBER(2),
-    progress DECIMAL
+    progress DECIMAL(3, 2)
 );
+
 
 -- Countries from earth
 CREATE TABLE country(
     country_id NUMBER PRIMARY KEY,
+    name_country VARCHAR2(30),
     expense NUMBER,
     panic NUMBER,
     alien_activity NUMBER
@@ -84,6 +88,8 @@ CREATE TABLE home_base(
     PRIMARY KEY(base_id, country_id)
 );
 
+DROP TABLE home_base;
+
 -- Enemy glorp
 CREATE TABLE UFO(
     UFO_ID NUMBER PRIMARY KEY,
@@ -111,3 +117,24 @@ INSERT INTO Hangar(hangar_id, aircraft_id)
 VALUES(011, 001);
 
 INSERT INTO Living_quarters(living_id, max_cap) VALUES(02001, 50);
+
+-- Insertion of the important countries
+INSERT INTO country(country_id, name_country, expense, panic, alien_activity)
+VALUES
+    (01, 'United States', 250000, 10, 15),
+    (02, 'Canada', 150000, 12, 32),
+    (03, 'Brazil', 80000, 0, 0),
+    (04, 'Great Britain', 120000, 15, 30),
+    (05, 'France', 130000, 21, 33),
+    (06, 'Spain', 100000, 17, 13),
+    (07, 'Germany', 180000, 33, 50),
+    (08, 'Italy', 120000, 24, 45),
+    (09, 'Nigeria', 50000, 12, 37),
+    (10, 'South Africa', 75000, 75, 90),
+    (11, 'Egypt', 90000, 43, 66),
+    (12, 'Russia', 160000, 24, 50),
+    (13, 'China', 240000, 0, 5),
+    (14, 'Japan', 150000, 5, 2),
+    (15, 'India', 120000, 20, 30),
+    (16, 'Australia', 100000, 0, 0)
+END;
