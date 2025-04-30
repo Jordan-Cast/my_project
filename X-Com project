@@ -117,6 +117,22 @@ INSERT INTO Hangar(hangar_id, aircraft_id)
 VALUES(011, 001);
 
 INSERT INTO Living_quarters(living_id, max_cap) VALUES(02001, 50);
+INSERT INTO Living_quarters(living_id, max_cap) VALUES(02002, 50);
+INSERT INTO Living_quarters(living_id, max_cap) VALUES(02003, 50);
+
+INSERT INTO General_store(storage_id, max_cap) VALUES(03001, 75);
+INSERT INTO General_store(storage_id, max_cap) VALUES(03002, 75);
+
+INSERT INTO Laboratory(research_id, available_room, progress) VALUES(04001, 30, 0.31);
+INSERT INTO Laboratory(research_id, available_room, progress) VALUES(04002, 30, 0.25);
+
+INSERT INTO Workshop(engineering_id, available_room, progress) VALUES(05001, 25, 0.80);
+INSERT INTO Workshop(engineering_id, available_room, progress) VALUES(05002, 25, 0.53);
+INSERT INTO Workshop(engineering_id, available_room, progress) VALUES(05003, 25, 0);
+
+-- Insert a base
+INSERT INTO Base(base_id, name_base, area_of_base, hangar_id, living_id, research_id, engineer_id, storage_id)
+VALUES(1, 'House', 50000, 011, 02001, 4001, 5001, 03001);
 
 -- Insertion of the important countries
 INSERT INTO country(country_id, name_country, expense, panic, alien_activity)
