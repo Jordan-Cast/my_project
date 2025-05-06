@@ -15,7 +15,6 @@ CREATE TABLE Base(
     FOREIGN KEY(storage_id) REFERENCES General_store(storage_id) 
 );
 
-DROP TABLE Base;
 
 -- Aircraft for the hangar
 CREATE TABLE Aircraft(
@@ -45,13 +44,13 @@ CREATE TABLE Hangar(
 CREATE TABLE Laboratory(
     research_id NUMBER PRIMARY KEY,
     available_room NUMBER(2),
-    progress DECIMAL(3, 2)
+    progress DECIMAL(3, 2)  --Should max out to 1.0
 );
 
 CREATE TABLE Workshop(
     engineering_id NUMBER PRIMARY KEY,
     available_room NUMBER(2),
-    progress DECIMAL(3, 2)
+    progress DECIMAL(3, 2) --Should max out to 1.0
 );
 
 
@@ -88,7 +87,6 @@ CREATE TABLE home_base(
     PRIMARY KEY(base_id, country_id)
 );
 
-DROP TABLE home_base;
 
 -- Enemy glorp
 CREATE TABLE UFO(
@@ -111,7 +109,7 @@ CREATE TABLE alien_base(
 
 -- The many insertions oh god
 INSERT INTO Aircraft(air_id, armament, max_speed, max_range)
-VALUES(001, 'Long_range missiles', 2450, 3500);
+VALUES(001, 'Long range missiles', 2100, 3500);
 
 INSERT INTO Hangar(hangar_id, aircraft_id)
 VALUES(011, 001);
@@ -134,6 +132,8 @@ INSERT INTO Workshop(engineering_id, available_room, progress) VALUES(05003, 25,
 INSERT INTO Base(base_id, name_base, area_of_base, hangar_id, living_id, research_id, engineer_id, storage_id)
 VALUES(1, 'House', 50000, 011, 02001, 4001, 5001, 03001);
 
+SELECT * FROM Base;
+
 -- Insertion of the important countries
 INSERT INTO country(country_id, name_country, expense, panic, alien_activity)
 VALUES
@@ -154,3 +154,88 @@ VALUES
     (15, 'India', 120000, 20, 30),
     (16, 'Australia', 100000, 0, 0)
 END;
+
+SELECT * FROM country;
+
+-- The Glorps and their spaceships
+INSERT INTO UFO(UFO_ID, ufo_type, race, objective, armament, speed)
+VALUES
+    (8001, 'Small', 'Sectoid', 'Scout', 'Short Plasma cannon', 2400),
+    (8002, 'Supply', 'Floater', 'Base resupply', 'Medium Plasma cannon', 3200),
+    (8003, 'Terror', 'Snakemen', 'Terrorise', 'Large Plasma cannon', 4800)
+END;
+
+INSERT INTO alien_base(alien_id, occupants, race, country_id)
+VALUES(9001, 32, 'Sectoid', 11);
+
+-- Create a home base/first base
+INSERT INTO home_base(base_id, country_id)
+VALUES(1, 16);
+
+-- The brave soldiers
+INSERT INTO operative(op_id, living_id, name_op, health_points, action_points, stamina, accuracy, throw_accuracy, strength, bravery)
+VALUES
+    (1001, 02001, 'Alan Jones', 34, 55, 46, 60, 66, 36, 39),
+    (1002, 02001, 'Sarah Thompson', 40, 50, 35, 40, 60, 22, 30),
+    (1003, 02001, 'Stefan Hafner', 40, 56, 33, 45, 50, 33, 35),
+    (1004, 02001, 'Pierre Lecointe', 30, 56, 31, 50, 72, 29, 31),
+    (1005, 02001, 'Tatyana Voronin', 26, 55, 37, 40, 61, 25, 33),
+    (1006, 02001, 'Tatsuo Sato', 33, 54, 34, 65, 74, 36, 20),
+    (1007, 02001, 'Brett Evans', 40, 60, 44, 50, 67, 39, 40),
+    (1008, 02001, 'Sylvie Dujardin', 25, 60, 68, 47, 61, 27, 30)
+END;
+
+-- Update the Aircraft
+UPDATE Aircraft
+SET armament = 'Laser Cannon'
+WHERE air_id = 001;
+
+-- Update the stats of a soldier
+UPDATE operative
+SET health_points = 32
+WHERE op_id = 1005;
+
+-- A singular function (i think...) Searching where the gleeby deeby base is
+SELECT ct.name_country
+FROM country ct
+JOIN alien_base ab ON ct.country_id = ab.country_id
+WHERE ab.country_id = 11;
+
+-- A group procedure | To search a country where the panic and alien activity is over 70
+CREATE OR REPLACE PROCEDURE danger_alert(
+    c_country_panic IN NUMBER
+) AS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Searching for countries close to dangerous levels at: ' || c_country_panic);
+    FOR all_count IN (
+        SELECT pan.country_name, pan.panic, pan.alien_activity
+        FROM country pan
+        -- I think i need a join statement... but i dont know for what.
+        WHERE pan.panic >= c_county_panic
+    )
+    LOOP
+        DBMS_OUTPUT.PUT_LINE('Country in panic: ' || all_count.country_name);
+        DBMS_OUTPUT.PUT_LINE('Level of panic: %' || all_count.panic);
+        DBMS_OUTPUT.PUT_LINE('Amount of alien activity: %' || all_count.alien_activity);
+    END LOOP;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No country found.');
+        WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END; -- This doesn't work... I will need to fix this
+
+
+-- Drop the tables like dropping chinaware
+DROP TABLE base CASCADE CONSTRAINTS;
+DROP TABLE Aircraft CASCADE CONSTRAINTS;
+DROP TABLE General_store  CASCADE CONSTRAINTS;
+DROP TABLE Hangar CASCADE CONSTRAINTS;
+DROP TABLE Laboratory CASCADE CONSTRAINTS;
+DROP TABLE Workshop CASCADE CONSTRAINTS;
+DROP TABLE Living_quarters CASCADE CONSTRAINTS;
+DROP TABLE country CASCADE CONSTRAINTS;
+DROP TABLE Operative CASCADE CONSTRAINTS;
+DROP TABLE home_base CASCADE CONSTRAINTS;
+DROP TABLE UFO CASCADE CONSTRAINTS;
+DROP TABLE alien_base CASCADE CONSTRAINTS;
